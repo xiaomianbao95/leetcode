@@ -1,0 +1,70 @@
+Given an array nums of n integers, are there elements a, b, c in nums such that a + b + c = 0?
+ Find all unique triplets in the array which gives the sum of zero.
+Note:
+
+The solution set must not contain duplicate triplets.
+
+Example:
+
+Given array nums = [-1, 0, 1, 2, -1, -4],
+
+A solution set is:
+[
+  [-1, 0, 1],
+  [-1, -1, 2]
+]
+
+
+分析：
+找出给出的数组里三个刚好加起来等于0的数，而且按递增排序，
+
+1.数组里满足要求的数，要递增排序，可以用Collections.sort()进行排序，
+2.为了不重复，我们用HashSet存满足要求的一组数；
+3.要找三个数之和等于0，可以外循环找第一个数，再内循环找第二个数，用0减他两之和就是要找的第三个数
+如果再套一个循环，时间复杂度太高，我们可以先把数组用HashMap存起来，然后get()方法找到目标值temp
+在map中所对应的value(也是它在nums[]里的下标)，这里我们从后往前往map中cun数，因为如果重复的数，我们
+取最大的索引存，这样在后面目标值temp的索引时，取到的是大的，用k>j可以限制重复数，还有为了减小时间复杂度
+我们在每次进入一个循环之前，定义了两个HashSet来存数，如果set中已经有这个数了，说明能满足或者不满足这个
+数的已经寻找过了，就不用了，可以继续下一个了。
+import java.util.*;
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        Set<List<Integer>> list=new HashSet();//不可以插入重复的元素
+        HashMap<Integer,Integer> map2=charu(nums); //用来找满足要求的temp
+      
+        HashSet<Integer> set1=new HashSet<Integer>();//去除外循环里的重复数
+        for(int i=0;i<nums.length;i++){
+            if(!set1.add(nums[i]))
+                continue;
+            HashSet<Integer> set2=new HashSet<Integer>();//去除外循环里的重复数
+            for(int j=i+1;j<nums.length;j++){
+                 if(!set2.add(nums[j]))
+                     continue;
+                int temp=-(nums[i]+nums[j]);
+                Integer k=map2.get(temp);//得到满足要求的数的索引
+                if(k!=null&&k>j){//可能没有满足要求的，所以K!=null，
+                     List<Integer> array=new ArrayList();     
+                        array.add(nums[i]);
+                        array.add(nums[j]);
+                        array.add(nums[k]);
+                        Collections.sort(array);
+                        list.add(array);                    
+                }
+            }
+        }
+        return new ArrayList<>(list);        
+    }
+    public HashMap<Integer,Integer> charu(int[] nums){
+        HashMap<Integer,Integer> map=new HashMap();
+       
+        for(int i=nums.length-1;i>=0;i--){//注意一定从后往前存，为了取重复数的最大索引存，为了以后的k>j
+            if(!map.containsKey(nums[i]))
+                map.put(nums[i],i);
+        }
+        //  for(int i=0;i<nums.length;i++){
+        //     if(!map.containsKey(nums[i]))
+        //         map.put(nums[i],i);
+        // }
+        return map;
+    }
+}
