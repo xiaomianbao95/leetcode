@@ -68,3 +68,40 @@ class Solution {
         return map;
     }
 }
+第二种方法：先把数组排序，然后for循环取第一个数，这里实例一个HashSet,去除重复的，然后定义两个指针，
+low=i+1;high=nums.length-1;然这三个数相加看是否等于0，等于0加入，然后继续走，这一次循环可能还有满
+足要求的，大于0,说明high处太大了，high--;小于0,说明太小，low++;
+import java.util.*;
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        Set<List<Integer>> list=new HashSet<>();
+        Arrays.sort(nums);
+        Set<Integer> set1=new HashSet<>();
+        
+        for(int i=0;i<nums.length;i++){
+            if(!set1.add(nums[i]))
+                continue;
+            int low=i+1;
+            int high=nums.length-1;
+            while(high>low){
+                int sum=nums[i]+nums[low]+nums[high];
+                if(sum==0){
+                    List<Integer> array=new ArrayList<>();
+                    array.add(nums[i]);
+                    array.add(nums[low]);
+                    array.add(nums[high]);
+                    list.add(array);
+                    high--;
+                    continue;
+                   
+                }else if(sum>0){
+                    high--;
+                }else{
+                    low++;
+                }
+            }
+        }
+        return new ArrayList(list);
+        
+    }
+}
