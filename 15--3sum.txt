@@ -78,7 +78,7 @@ class Solution {
         Arrays.sort(nums);
         Set<Integer> set1=new HashSet<>();
         
-        for(int i=0;i<nums.length;i++){
+        for(int i=0;i<nums.length-2;i++){
             if(!set1.add(nums[i]))
                 continue;
             int low=i+1;
@@ -91,13 +91,20 @@ class Solution {
                     array.add(nums[low]);
                     array.add(nums[high]);
                     list.add(array);
-                    high--;
-                    continue;
+                   while(++low<high&&nums[low]==nums[low-1])//添加这两个while循环可以去除刚才
+                                                              //已经考虑过的重复数
+                       ;
+                   while(low<--high&&nums[high]==nums[high+1])
+                        ;
                    
                 }else if(sum>0){
-                    high--;
+                   high--;//第一种
+                    // while(low<--high&&nums[high]==nums[high+1])//第二种
+                    //     ;
                 }else{
                     low++;
+                    // while(++low<high&&nums[low]==nums[low-1])
+                    //    ;
                 }
             }
         }
