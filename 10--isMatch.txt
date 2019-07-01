@@ -1,0 +1,100 @@
+public class Ismatch {
+	//递归
+	public boolean match(String s,String p) {
+		if(s==null&&p==null)
+			return true;
+		if(s!=null&&p==null)
+			return false;
+		int sindex=0;int pindex=0;
+		return match2(sindex,s,pindex,p);
+	}
+	public boolean match2(int sindex,String s,int pindex,String p) {
+		if(sindex!=s.length()&&pindex==p.length())
+			return false;
+		if(sindex==s.length()&&pindex==p.length())
+			return true;
+//		if(sindex==s.length()&&pindex!=p.length())
+//			return false;错误因为""和".*"就可以匹配
+		if(pindex+1<p.length()&&p.charAt(pindex+1)=='*') {
+			if(sindex<s.length()&&(s.charAt(sindex)==p.charAt(pindex))||p.charAt(pindex)=='.') {
+				try {
+					return match2(sindex+1,s,pindex,p)||match2(sindex,s,pindex+2,p)||match2(sindex+1,s,pindex+2,p);
+				} catch (StackOverflowError e) {
+					// TODO: handle exception
+					
+				}
+			}else{
+				return match2(sindex,s,pindex+2,p);
+			}
+		}
+		if(sindex<s.length()&&pindex<p.length()&&(p.charAt(pindex)=='.'||s.charAt(sindex)==p.charAt(pindex))) {
+			return match2(sindex+1,s,pindex+1,p);
+		}else {
+	
+			return false;
+		}
+	}
+	
+	//动态规划
+	/*
+	 * dp(i, j)------字符串s中[0, i - 1]范围内的字符串能否匹配字符串p中[0, j - 1]范围内的字符串
+	 * 重点是p的第j个字符为*时，如果j-1等于i并且j-1='.'那么就有三种情况：
+	 * 1.忽略掉*和前一个字符不考虑所以dp[i][j]=dp[i][j-2];
+	 * 2.只考虑*，也就是*可以匹配多个前面的字符，dp[i][j]=dp[i-1][j]
+	 * 3.忽略掉*。只考虑前一个字符是匹配的dp[i][j]=dp[i][j-1]
+	 * 这里我用的dp[i+1][j+1]存i,j比较时的状态，所以最后返回dp[s.length()][p.length()]才是两个字符串比较完的状态
+	 * 特别注意！！！！！！！！
+	 * dp[i][0]表示s中字符和空字符串p取匹配
+	 * dp[0][j]表示s是空字符串和p去匹配，并不是说0是s第一个字符，但是s.charAt(0),表示第0个字符，所以说在字符串中第i,j个位置字符的判断最后在dp
+	 * 中存的时候要加1.
+	 * 比如s=aaa,p=a*a下面初始化，i=0时，p.charAt(0)是p中的第0个位置的字符a,dp[0][i-1]=dp[0][-1]=false,
+	 * 所以dp[0][1]=false,看这里取得p中第0个位置字符最后在dp中却存的是dp[0][i+1]位置。
+	 * 说明，dp中0列0行都是存和空字符串的匹配情况，从1位置开始才存字符串第1个字符的比较结果。
+	 * 
+	 * 	 * 	 */
+//	public boolean match(String s,String p) {
+//		if(s==null&&p==null)
+//			return true;
+//		if(s!=null&&p==null)
+//			return false;
+//		boolean dp[][]=new boolean[s.length()+1][p.length()+1];
+//		dp[0][0]=true;
+//        for(int i=0;i<p.length();i++) {
+//        	if(p.charAt(i)=='*'&&dp[0][i-1])//dp[0][i-1]位置存的是s空字符串和p的i-2位置字符比较结果，因为s为空，p.charAt(i)=='*'
+//        		                            //所以*和它前面的可以忽略掉i-2位置去比较
+//        		dp[0][i+1]=true;
+//        }
+//		for(int i=0;i<s.length();i++) {
+//			for(int j=0;j<p.length();j++){
+//				if(p.charAt(j)=='*') {
+//					if((p.charAt(j-1)==s.charAt(i))||p.charAt(j-1)=='.') {
+//						dp[i+1][j+1]=dp[i+1][j]||dp[i][j+1]||dp[i+1][j-1];
+//					}else {
+//						dp[i+1][j+1]=dp[i+1][j-1];
+//					}
+//				}
+//				if((p.charAt(j)==s.charAt(i))||p.charAt(j)=='.') {
+//					dp[i+1][j+1]=dp[i][j];
+//				}
+//			}
+//		}
+//		return dp[s.length()][p.length()];
+//	}
+//	
+	
+	
+	
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Ismatch im=new Ismatch();
+		String s="";
+		String p=".";	
+	    im.match(s, p);
+		System.out.println(im.match(s, p));
+		
+		
+
+	}
+
+}
