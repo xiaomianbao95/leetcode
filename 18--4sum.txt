@@ -1,0 +1,61 @@
+给定一个包含?n 个整数的数组?nums?和一个目标值?target，判断?nums?中是否存在四个元素 
+a，b，c?和 d?，使得?a + b + c + d?的值与?target?相等？找出所有满足条件且不重复的四元组。
+
+
+注意：
+
+答案中不可以包含重复的四元组。
+
+示例：
+
+给定数组 nums = [1, 0, -1, 0, -2, 2]，和 target = 0。
+
+
+满足要求的四元组集合为：
+[
+  [-1,  0, 0, 1],
+  [-2, -1, 1, 2],
+  [-2,  0, 0, 2]
+]
+
+
+分析：和三个数之和雷同，只不过这个排序之后先固定两个数，然后定义两个指针从两端开始找能满足要求的
+这里注意第二个循环里去重，是为了在第二次循环不再考虑重复的数，所以必须是j!=i+1&&nums[j-1]==nums[j]
+不能是nums[j-1]==nums[j]一个条件，那么这样i和j相等的也被不算，就缺少满足要求的。
+import java.util.*;
+class Solution {
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        Arrays.sort(nums);
+        int len=nums.length;
+        HashSet<List<Integer>> set=new HashSet<List<Integer>>();
+        if(len<4)
+            return new ArrayList<>();
+        for(int i=0;i<len-3;i++){
+            if(i>0&&nums[i-1]==nums[i]) continue;//去重
+            for(int j=i+1;j<len-2;j++){
+                if(j!=i+1&&nums[j-1]==nums[j]) continue;//去重
+                int temp=target-(nums[i]+nums[j]);
+                int low=j+1;
+                int high=len-1; 
+                while(high>low){
+                     int sum=(nums[low]+nums[high])-temp;
+                     if(sum==0){
+                         List<Integer> array=new ArrayList<Integer>();
+                         array.add(nums[i]);array.add(nums[j]);
+                         array.add(nums[low]);array.add(nums[high]);
+                         set.add(array);
+                         while(++low<high&&nums[low-1]==nums[low])
+                         ;
+                         while(--high>low&&nums[high+1]==nums[high])
+                         ;
+                     }else if(sum>0){
+                         high--;
+                     }else{
+                         low++;
+                     }
+                }
+            }
+        }
+        return new ArrayList<>(set);
+    }
+}
