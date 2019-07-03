@@ -1,0 +1,45 @@
+给定一个只包括 '('，')'，'{'，'}'，'['，']'?的字符串，判断字符串是否有效。
+
+有效字符串需满足：
+
+左括号必须用相同类型
+的右括号闭合。
+左括号必须以正确的顺序闭合。
+注意空字符串可被认为是有效字符串
+
+
+分析：看到这个题，首先要有效有左边就要找到右边，并且一对开闭括号中出现其他类型的，必须成对出现且也是有效的
+所以，一直到最里面的一对必须是有效的，再看外面的其他的，我们必须有个存储的东西存之前遇到的另一边括号，先放进去的最后
+才取，所以用栈，我们这样实现：
+1.遇到左边的就存进去2，如果遇到右边的，如果栈为空，返回false,如果栈不为空，我们就和栈顶的比较，如果能组成一对开闭括号，就移除栈顶元素，
+如果不能组成一对，就把它加入栈，注意！！！！不满足一定要加入栈，3.最后如果栈为空就true，否则false。
+import java.util.*;
+class Solution {
+    public boolean isValid(String s) {
+        if(s==null)
+            return true;
+        Stack<Character> stack=new Stack<>();
+        for(int i=0;i<s.length();i++){
+            if(s.charAt(i)=='{'||s.charAt(i)=='['||s.charAt(i)=='('){
+                stack.push(s.charAt(i));             
+            }else if(s.charAt(i)=='}'||s.charAt(i)==')'||s.charAt(i)==']'){
+                if(stack.isEmpty()){
+                    return false;
+                }else if(s.charAt(i)=='}'&&stack.peek()=='{'){
+                    stack.pop();
+                }else if(s.charAt(i)==']'&&stack.peek()=='['){
+                    stack.pop();
+                }else if(s.charAt(i)==')'&&stack.peek()=='('){
+                    stack.pop();
+                }else{
+                     stack.push(s.charAt(i)); 
+                }
+            }
+        }
+    
+        if(stack.isEmpty()) 
+            return true;
+        return false;
+        
+    }
+}
