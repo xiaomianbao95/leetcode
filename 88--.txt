@@ -1,0 +1,75 @@
+给定两个有序整数数组?nums1 和 nums2，将 nums2 合并到?nums1?中，使得?num1 成为一个有序数组。
+
+说明:
+
+初始化?
+nums1 和 nums2 的元素数量分别为?m 和 n。
+你可以假设?nums1?有足够的空间（空间大小大于或等于?m + n）来保存 
+nums2 中的元素。
+示例:
+
+输入:
+nums1 = [1,2,3,0,0,0], m = 3
+nums2 = [2,5,6],       n = 3
+
+输出:?[1,2,2,3,5,6]
+
+
+
+分析，给了第一个数组和第二个数组的元素个数，那么我们就在每个数组的元素个数内，互相比较，把较小的存在一个建立的长度为
+m+n的数组中，为此我们定义两个指针，两个指针分别从两个数组的0开始，最后将辅助数组复制回nums1即可
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int[] temp=new int[m+n];
+        int i=0;int j=0;int k=0;int flag=0;
+        while(j<n&&i<m){
+            if(nums1[i]<nums2[j]){
+                temp[k++]=nums1[i];
+                    i++;
+            }else{
+                temp[k++]=nums2[j];
+                j++;
+            }
+        }
+       if(i>=m&&j<n){
+           while(j<n){
+               temp[k++]=nums2[j];
+               j++;
+           }
+       }
+        if(j>=n&&i<m){
+            while(i<m){
+                temp[k++]=nums1[i];
+                i++;
+            }    
+        }
+        for(int kk=0;kk<temp.length;kk++){
+            nums1[flag++]=temp[kk];
+        }
+   
+    }
+}
+
+但是这样我们需要额外的存储空间，我们定义两个指针然后从后向前比较，先存放最大的在nums1的尾，因为nums1的后面空出了
+n个位置。
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int p1=m-1;
+        int p2=n-1;
+        int p3=m+n-1;
+        while(p1>=0&&p2>=0){
+           if(nums1[p1]>=nums2[p2]){
+                nums1[p3--]=nums1[p1--];
+            }else{
+                nums1[p3--]=nums2[p2--];
+            } 
+        }
+        while(p1<0&&p2>=0){
+            nums1[p3--]=nums2[p2--];
+        }
+        while(p1>=0&&p2<0){
+            nums1[p3--]=nums1[p1--];
+        }
+            
+    }
+}
