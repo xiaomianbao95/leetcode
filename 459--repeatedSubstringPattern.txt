@@ -48,3 +48,28 @@ class Solution {
         return false;
     }
 }
+第二种：正则表达式
+(\\w+)1个或者多个字母作为一个捕获组，\\1+重复1次以上。
+class Solution {
+    public boolean repeatedSubstringPattern(String s) {
+        return s.matches("(\\w+)\\1+");
+    }
+}
+第三种：
+class Solution {
+    public boolean repeatedSubstringPattern(String s) {
+        if(s==null||s.length()==0) return true;
+        if(s.length()==1) return false;
+        //只有一个字母重复组成的字符串"aaaaaaa","zzzzzz"
+        if(s.split(String.valueOf(s.charAt(0))).length==0) return true;
+        //从后往前，找最长的子字符串，分割判断分割后数组长度是否为0
+        for(int i=s.length()-1;i>=2;i--){
+            if(s.length()%i==0){
+                String s1=s.substring(0,i);
+                if(s.split(s1).length==0)
+                    return true;
+            }
+        }
+        return false;
+    }
+}
