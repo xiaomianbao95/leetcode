@@ -106,3 +106,61 @@ class Solution {
         return arr;
     }
 }
+第二种方法：以区间下界为比较对象，先二分查找合适的插入位置，然后用56题中的区间合并方法合并区间
+import java.util.*;
+class Solution {
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        if(intervals==null||intervals.length==0){
+            int[][] res=new int[][]{newInterval};
+            return res;
+        }
+        if(newInterval==null||newInterval.length==0){
+            return intervals;
+        }
+        int len=intervals.length;
+        int[][] res=new int[len+1][2];
+        int low=0;
+        int high=len-1;
+        int index=0;
+        //二分查找合适的插入位置，以区间下界为比较标准
+        while(low<high){
+            int mid=(low+high)/2;
+            if(intervals[mid][0]<newInterval[0]){
+                low=mid+1;
+            }else if(intervals[mid][0]>newInterval[0]){
+                high=mid-1;
+            }else{
+                index=mid;
+                break;
+            }           
+        }
+        if(low>=high){
+            index=intervals[low][0]>newInterval[0]?low:low+1;
+        }
+        //区间插入位置
+        res[index]=newInterval;
+        int j=0;
+        //把原区间列表复制进res
+        for(int i=0;i<len+1;i++){
+            if(i==index) continue;
+            res[i]=intervals[j++];
+        }
+        //合并区间
+        ArrayList<int[]> list=new  ArrayList<int[]>();
+        for(int i=0;i<len+1;i++){
+            int[] temp=new int [2];
+            temp[0]=res[i][0];
+            temp[1]=res[i][1];          
+            while(i<len&&temp[1]>=res[i+1][0]){
+                temp[0]=Math.min(temp[0],res[i+1][0]);
+                temp[1]=Math.max(temp[1],res[i+1][1]);
+                i++;
+                
+            }
+            list.add(temp);    
+        }
+        int[][] arr=new int[list.size()][2];
+        list.toArray(arr);
+        return arr;
+    }
+}
