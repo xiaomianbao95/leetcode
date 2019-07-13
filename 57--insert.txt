@@ -1,0 +1,108 @@
+给出一个无重叠的 ，按照区间起始端点排序的区间列表。
+
+在列表中插入一个新的区间，你需要确保列表中的区间仍然有序且
+不重叠（如果有必要的话，可以合并区间）。
+
+
+示例?1:
+
+输入: intervals = [[1,3],[6,9]], newInterval = [2,5]
+
+输出: [[1,5],[6,9]]
+示例?
+2:
+
+输入: intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]
+
+输出: [[1,2],[3,10],[12,16]]
+ 解释: 这是因为新的区间 [4,8] 与 [3,5],[6,7],[8,10]?重叠。
+
+
+分析：要在现在按起始端点排序的列表中插入一个新的区间，而且区间仍然有序并且区间如果重叠可以合并，我们就要
+考虑这个区间插入合适位置保证有序，那就按大小比较插入，还要考虑合并问题，主要有以下5种情况：A是原区间列表
+中的一个区间，B是要插入的区间 list用来存插入区间的区间列表
+1）[  A ] [ B ]:这种情况又要考虑如果原区间列表只有一个区间，那就再list中加入A，再加入B，如果[  A ] [ B ][A2 ]
+可能还有这种情况B不能和后面的合并直接加入B;
+2)  [  A [ ] B ] :这时A，B可以合并，并且合并之后还要继续和后面的区间比较能不能合并，注意合并一个区间i++;
+3)  [  B [ ] A ] ：A,B可以合并，合并之后直接加入list;
+4)  [  B ] [ A ] :A,B不能合并，如果len==1,那就在list中先加入B,再加入A;
+5)  [  B [ A ] ] :合并A,B并且继续he后面区间比较能不能合并，注意合并一个i++;
+最后把list列表用toArray()方法转化为int数组，返回。
+import java.util.*;
+class Solution {
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        if(intervals==null||intervals.length==0){
+            int[][] a=new int[1][2];
+            a[0][0]=newInterval[0];
+            a[0][1]=newInterval[1];
+            return a;
+        }
+           
+        ArrayList<int[]> list=new  ArrayList<int[]>();
+        int len=intervals.length;
+        int i=0;
+        while(i<len){
+            if(intervals[i][1]<newInterval[0]){
+                int[] flag=new int[2];
+                flag[0]=intervals[i][0];
+                flag[1]=intervals[i][1];
+                list.add(flag);
+                if(i<len-1&&newInterval[1]<intervals[i+1][0]){
+                    list.add(newInterval);   
+                }
+                i++;
+                if(i==len){
+                    list.add(newInterval);
+                }
+                
+            }else if(newInterval[0]>=intervals[i][0]&&newInterval[0]<=intervals[i][1]){
+                int j=i;
+                int[] temp=new int[2];
+                temp[0]=intervals[i][0];
+                temp[1]=Math.max(intervals[i][1],newInterval[1]);
+                i++;
+                while(j<len-1&&temp[1]>=intervals[j+1][0]){
+                    i++;
+                    temp[0]=Math.min(temp[0],intervals[j+1][0]);
+                    temp[1]=Math.max(temp[1],intervals[j+1][1]);
+                    j++;
+                    
+                }
+                list.add(temp);
+            }else if(intervals[i][0]>newInterval[1]){
+                if(i==0){
+                    list.add(newInterval);
+                }
+                int[] flag2=new int[2];
+                flag2[0]=intervals[i][0];
+                flag2[1]=intervals[i][1];
+                list.add(flag2);
+                i++;
+            }else if(newInterval[1]<=intervals[i][1]){
+                int[] flag3=new int[2];
+                flag3[0]=Math.min(intervals[i][0],newInterval[0]);
+                flag3[1]=intervals[i][1];
+                list.add(flag3);
+                i++;
+            }else if(newInterval[1]>intervals[i][1]){
+                int[] flag4=new int[2];
+                flag4[0]=Math.min(intervals[i][0],newInterval[0]);
+                flag4[1]=newInterval[1];
+                int k=i;
+                i++;
+                while(k<len-1&&flag4[1]>=intervals[k+1][0]){
+                    flag4[0]=Math.min(flag4[0],intervals[k+1][0]);
+                    flag4[1]=Math.max(flag4[1],intervals[k+1][1]);
+                    k++;
+                    i++;
+                }
+                list.add(flag4);
+               
+            }
+                
+        }
+        int[][] arr=new int[list.size()][2];
+        list.toArray(arr);
+        return arr;
+    }
+}
