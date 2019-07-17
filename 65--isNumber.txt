@@ -44,7 +44,7 @@ class Solution {
             if(s1.charAt(i)=='+'||s1.charAt(i)=='-'){
                 if(i>0&&s1.charAt(i-1)!='e')
                     return false;
-                if(i==(len-1))//以+/-结尾为false
+                if(i==(len-1))//以+/-结尾为false比如:'4e+'
                     return false;
                 
             }else if(s1.charAt(i)=='.'){
