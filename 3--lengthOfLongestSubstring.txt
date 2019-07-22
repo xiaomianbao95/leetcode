@@ -1,0 +1,63 @@
+给定一个字符串，请你找出其中不含有重复字符的?最长子串?的长度。
+
+
+示例?1:
+
+输入: "abcabcbb"
+输出: 3 
+解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+
+示例 2:
+
+输入: "bbbbb"
+输出: 1
+解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+
+示例 3:
+
+输入: "pwwkew"
+输出: 3
+解释: 因为无重复字符的最长子串是?"wke"，所以其长度为 3。
+?    
+请注意，你的答案必须是 子串 的长度，"pwke"?是一个子序列，不是子串。
+
+
+
+分析：要找出一个字符串中的最长不重复字串，我们可以统计第i个字符前面与它不相同的字符个数，当有相同的字符时，
+记录这个位置temp，下次从i位置开始比较到这个位置temp就可以，初始化，每个位置为1，max[i]代表前i个字符中最长的不
+重复字符串。
+最后比较处max中最大的数就是最长的长度。
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        if(s==null||s.length()==0)
+            return 0;
+        int len=s.length();
+        int[] max=new int[len+1];
+        
+        for(int i=1;i<=len;i++){
+            max[i]=1;
+        }
+        int temp=-1;
+        int sum=1;
+        for(int i=1;i<len;i++){
+            for(int j=i-1;j>temp;j--){
+                if(s.charAt(j)!=s.charAt(i)){
+                    sum++;
+                    
+                }else{
+                    sum=1;
+                    temp=j;               
+                }
+            }
+            max[i+1]=sum;
+            sum=1;//一次循环完，要把sum置1
+           
+        }
+        int maxlen=0;
+        for(int i=1;i<=len;i++){
+            if(max[i]>maxlen)
+                maxlen=max[i];
+        }
+        return maxlen;       
+    }
+}
